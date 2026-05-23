@@ -129,8 +129,8 @@ input { font-family: inherit; }
   background: var(--paper);
   border: 4px solid var(--shadow-ink);
   border-radius: var(--radius);
-  padding: 14px 26px;
-  font-size: clamp(18px, 2.4vw, 28px);
+  padding: clamp(8px, 1.4vmin, 16px) clamp(14px, 2.4vmin, 28px);
+  font-size: clamp(15px, 2.1vmin, 24px);
   box-shadow: var(--shadow-pop);
   position: relative;
   text-align: center;
@@ -195,9 +195,9 @@ input { font-family: inherit; }
 .btn-pop.small  { font-size: 18px; padding: 10px 22px; border-width: 3px; box-shadow: 0 4px 0 var(--shadow-ink); }
 
 .chip-num {
-  width: 84px; height: 84px;
+  width: clamp(56px, 8vmin, 90px); height: clamp(56px, 8vmin, 90px);
   display: inline-flex; align-items: center; justify-content: center;
-  font-size: 48px; font-family: 'Mochiy Pop One', sans-serif;
+  font-size: clamp(28px, 4.5vmin, 50px); font-family: 'Mochiy Pop One', sans-serif;
   background: var(--paper);
   border: 4px solid var(--shadow-ink);
   border-radius: 20px;
@@ -280,8 +280,8 @@ input { font-family: inherit; }
   background: var(--paper);
   border: 4px solid var(--shadow-ink);
   border-radius: var(--radius-sm);
-  padding: 6px 16px;
-  font-size: 22px;
+  padding: clamp(4px, 0.8vmin, 8px) clamp(10px, 1.8vmin, 20px);
+  font-size: clamp(15px, 2.2vmin, 24px);
   box-shadow: 0 4px 0 var(--shadow-ink);
   width: 100%;
   box-sizing: border-box;
@@ -290,7 +290,7 @@ input { font-family: inherit; }
 .player-nameplate input {
   border: none;
   outline: none;
-  font-size: 22px;
+  font-size: clamp(15px, 2.2vmin, 24px);
   font-weight: 700;
   text-align: center;
   width: 100%;
@@ -307,10 +307,10 @@ input { font-family: inherit; }
   background: var(--p1);
   border: 4px solid var(--shadow-ink);
   border-radius: var(--radius-pill);
-  padding: 2px 14px;
+  padding: 2px clamp(8px, 1.4vmin, 16px);
   color: white;
   font-family: 'Mochiy Pop One', sans-serif;
-  font-size: 18px;
+  font-size: clamp(14px, 1.9vmin, 22px);
   box-shadow: 0 3px 0 var(--shadow-ink);
   text-shadow: 0 1px 0 rgba(0,0,0,0.2);
   z-index: 3;
@@ -346,9 +346,9 @@ input { font-family: inherit; }
   background: var(--gold);
   border: 4px solid var(--shadow-ink);
   border-radius: 12px;
-  padding: 4px 14px;
+  padding: clamp(2px, 0.5vmin, 6px) clamp(8px, 1.4vmin, 16px);
   font-family: 'Mochiy Pop One', sans-serif;
-  font-size: 18px;
+  font-size: clamp(14px, 1.9vmin, 22px);
   box-shadow: 0 3px 0 var(--shadow-ink);
   white-space: nowrap;
   transform: rotate(-4deg);
@@ -443,12 +443,12 @@ input { font-family: inherit; }
 /* ===== Phase 2: Count select ===== */
 .count-row {
   display: flex;
-  gap: 16px;
+  gap: clamp(8px, 1.6vmin, 18px);
   justify-content: center;
-  margin: 32px 0;
+  margin: clamp(12px, 2.5vmin, 32px) 0;
 }
 .count-chip {
-  width: 110px; height: 130px;
+  width: clamp(72px, 11vmin, 130px); height: clamp(84px, 13vmin, 150px);
   display: inline-flex; flex-direction: column;
   align-items: center; justify-content: center;
   font-family: 'Mochiy Pop One', sans-serif;
@@ -458,8 +458,8 @@ input { font-family: inherit; }
   box-shadow: var(--shadow-pop);
   transition: transform 100ms ease, box-shadow 100ms ease, background 120ms;
 }
-.count-chip .num { font-size: 64px; line-height: 1; color: var(--ink); }
-.count-chip .lbl { font-size: 18px; color: var(--ink-soft); margin-top: 4px; }
+.count-chip .num { font-size: clamp(36px, 6vmin, 64px); line-height: 1; color: var(--ink); }
+.count-chip .lbl { font-size: clamp(12px, 1.8vmin, 20px); color: var(--ink-soft); margin-top: 4px; }
 .count-chip.active {
   background: linear-gradient(180deg, #ffe066, var(--gold));
   transform: translateY(-6px) rotate(-3deg);
@@ -544,10 +544,11 @@ input { font-family: inherit; }
 }
 .timer-num-box {
   font-family: 'Mochiy Pop One', sans-serif;
-  font-size: clamp(110px, 18vw, 200px);
+  font-size: clamp(80px, 17vmin, 180px);
   line-height: 1;
   color: var(--gold);
   -webkit-text-stroke: 6px var(--shadow-ink);
+  paint-order: stroke fill;
   text-shadow: 6px 6px 0 var(--shadow-ink);
   text-align: center;
   cursor: pointer;
@@ -581,7 +582,7 @@ input { font-family: inherit; }
   -webkit-appearance: none;
   margin: 0;
 }
-.timer-unit { font-family: 'Mochiy Pop One', sans-serif; font-size: clamp(36px, 6vw, 60px); }
+.timer-unit { font-family: 'Mochiy Pop One', sans-serif; font-size: clamp(26px, 5vmin, 56px); }
 .timer-presets { display: flex; gap: 12px; }
 
 .countdown-overlay {
@@ -748,7 +749,7 @@ input { font-family: inherit; }
   z-index: 20;
 }
 .level-chip {
-  width: 96px; height: 110px;
+  width: clamp(64px, 9vmin, 110px); height: clamp(72px, 10.5vmin, 130px);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: 4px;
@@ -756,11 +757,11 @@ input { font-family: inherit; }
   border-radius: 20px;
   background: var(--paper);
   font-family: 'Mochiy Pop One', sans-serif;
-  font-size: 56px;
+  font-size: clamp(32px, 5vmin, 60px);
   box-shadow: var(--shadow-pop);
   transition: transform 120ms ease;
 }
-.level-chip .star { font-size: 18px; color: var(--gold-deep); }
+.level-chip .star { font-size: clamp(12px, 1.7vmin, 20px); color: var(--gold-deep); }
 .level-chip:hover { transform: translateY(-4px); }
 .level-chip.active {
   background: linear-gradient(180deg, #ffe066, var(--gold));
