@@ -133,6 +133,7 @@ input { font-family: inherit; }
   font-size: clamp(15px, 2.1vmin, 24px);
   box-shadow: var(--shadow-pop);
   position: relative;
+  z-index: 30; /* keep the instruction text readable above any tag that overlaps */
   text-align: center;
 }
 .guide-bubble::after {

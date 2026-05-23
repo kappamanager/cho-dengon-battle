@@ -359,10 +359,10 @@ window.ScreenOrder = ScreenOrder;
  * 画面5: タイマー設定
  * ==================================================================== */
 function ScreenTimer({ onStart, onBack }) {
-  const [mins, setMins] = useS(20);
+  const [mins, setMins] = useS(30);
   const [countdown, setCountdown] = useS(false);
 
-  const presets = [10, 15, 20, 30, 45, 60];
+  const presets = [30, 40, 50, 60];
 
   const begin = () => setCountdown(true);
 
@@ -449,13 +449,8 @@ function ScreenGame({
     scoring:       '採点中…',
   };
 
-  // Auto-advance scoring after animation
-  useE(() => {
-    if (phase === 'scoring') {
-      const t = setTimeout(() => onAfterScoring(), 2400);
-      return () => clearTimeout(t);
-    }
-  }, [phase]);
+  // (scoring used to auto-advance after 2.4s, but players need time to read
+  //  the breakdown — they now press a "次のラウンドへ" button explicitly.)
 
   return (
     <div className="game-main">
@@ -587,6 +582,12 @@ function ScreenGame({
               className="btn-pop gold"
               onClick={onConfirmAnswers}
             >採点完了 →</button>
+          )}
+          {phase === 'scoring' && (
+            <button
+              className="btn-pop gold"
+              onClick={onAfterScoring}
+            >次のラウンドへ →</button>
           )}
         </div>
       </div>
