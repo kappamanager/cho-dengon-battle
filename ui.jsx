@@ -119,9 +119,7 @@ function TopBar({ remaining, totalSec, onBack, canBack, onFinish, label }) {
         <button className="btn-pop ghost small" onClick={onBack} disabled={!canBack}>← 戻る</button>
         <button className="btn-pop small" style={{ background: '#ff4757' }} onClick={onFinish}>終了する</button>
       </div>
-      <div style={{ fontFamily: "'Mochiy Pop One', sans-serif", fontSize: 22 }}>
-        {label}
-      </div>
+      <div className="topbar-label">{label}</div>
       <div className="timer-display">
         <span className="timer-ico">⏱</span>
         <span>{formatTime(remaining)}</span>
