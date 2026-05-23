@@ -191,7 +191,7 @@ input { font-family: inherit; }
 .btn-pop.gold   { background: linear-gradient(180deg, #ffe066 0%, var(--gold) 60%, var(--gold-deep) 100%); color: var(--ink); text-shadow: 0 2px 0 rgba(255,255,255,0.4); }
 .btn-pop.green  { background: var(--p3); }
 .btn-pop.blue   { background: var(--p2); }
-.btn-pop.huge   { font-size: clamp(28px, 4vw, 44px); padding: clamp(16px, 2vw, 26px) clamp(32px, 5vw, 60px); }
+.btn-pop.huge   { font-size: clamp(24px, 3.4vmin, 40px); padding: clamp(12px, 1.8vmin, 22px) clamp(28px, 4vmin, 52px); }
 .btn-pop.small  { font-size: 18px; padding: 10px 22px; border-width: 3px; box-shadow: 0 4px 0 var(--shadow-ink); }
 
 .chip-num {
@@ -214,7 +214,7 @@ input { font-family: inherit; }
 /* ===== Title ===== */
 .title-mega {
   font-family: 'Reggae One', 'Mochiy Pop One', sans-serif;
-  font-size: clamp(72px, 12vw, 132px);
+  font-size: clamp(56px, 10.5vmin, 120px);
   line-height: 0.95;
   color: var(--gold);
   -webkit-text-stroke: 8px var(--shadow-ink);
@@ -236,7 +236,7 @@ input { font-family: inherit; }
   background: var(--p2);
   color: white;
   font-family: 'Mochiy Pop One', sans-serif;
-  font-size: clamp(18px, 2vw, 24px);
+  font-size: clamp(16px, 1.9vmin, 22px);
   padding: 8px 22px;
   border: 4px solid var(--shadow-ink);
   border-radius: 12px;
@@ -947,7 +947,7 @@ input { font-family: inherit; }
 }
 .loading-title {
   font-family: 'Reggae One', 'Mochiy Pop One', sans-serif;
-  font-size: clamp(40px, 7vw, 88px);
+  font-size: clamp(36px, 6.5vmin, 80px);
   color: var(--gold);
   -webkit-text-stroke: 6px var(--shadow-ink);
   paint-order: stroke fill;
