@@ -52,9 +52,14 @@ python -m http.server 8123
 | `08_WINNER` | 結果発表：1位 | ループ |
 | `09_LOSER` | 結果発表：2位以下 | ループ |
 
-**ローカル実行時**は `起動.bat` のサーバがディレクトリ一覧を返すので、フォルダにファイルを置くだけで自動検出される。
+**読み込み順の優先度**:
+1. `001_3d/001_motion/manifest.json` があれば、それを使う（GitHub Pages 等の本番環境用）。
+2. なければ各フォルダのディレクトリ一覧（`起動.bat` の python サーバが返す）から自動検出。
+3. それも取れなければ `vrm.js` 内の `MOTION_POOLS[…].files` のハードコードを使う。
 
-**GitHub Pages 上では**ディレクトリ一覧が取れないため、`vrm.js` 内の `MOTION_POOLS[…].files` 配列にファイル名を追記して push する必要がある（同じファイル名を配列に並べるだけ）。
+**ローカル実行時**は manifest.json がなくても python サーバの一覧取得で自動検出される（フォルダにファイルを置くだけで反映）。
+
+**GitHub Pages 用に追加モーションを反映する**ときは `001_3d/001_motion/manifest.json` に該当プールの配列へファイル名を追記して push。各プールキーは `TOP/INPUTNAME/NOTCHALL/CHALL/SELECTED/CORRECT/INCORRECT/WINNER/LOSER`。
 
 ## 技術スタック
 

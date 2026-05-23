@@ -1,0 +1,11 @@
+{
+  "TOP":       ["Salsa Dancing.fbx", "ノリのいい揺れ.fbx", "ルンバ.fbx", "拳をあげて歩き回る.fbx"],
+  "INPUTNAME": ["Boxing.fbx", "Talking.fbx", "Yelling.fbx", "クールな野郎だ.fbx", "周りを見渡す.fbx", "外国人リアクション風.fbx", "苛立ち.fbx"],
+  "NOTCHALL":  ["Bellydancing.fbx", "Happy Idle.fbx", "Happy.fbx", "何かを見渡す素振り.fbx"],
+  "CHALL":     ["Silly Dancing.fbx", "拳をぐるぐる.fbx", "敬礼.fbx", "軽く手を振る.fbx"],
+  "SELECTED":  ["Pointing.fbx"],
+  "CORRECT":   ["Joyful Jump.fbx", "手を振る.fbx"],
+  "INCORRECT": ["Rejected.fbx"],
+  "WINNER":    ["Shake Fist.fbx", "Ymca Dance.fbx"],
+  "LOSER":     ["Defeat.fbx", "Standing Arguing.fbx", "Sword Fight One.fbx"]
+}

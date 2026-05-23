@@ -131,6 +131,17 @@ let vrmBuffer = null;
 const fbxAssets = {}; // motionKey -> fbx asset
 const progress = { loaded: 0, total: 0, done: false }; // for the loading screen
 
+// Optional pre-built manifest of motion files. When present (recommended for
+// any deployment that doesn't expose directory listings, e.g. GitHub Pages),
+// we use it directly and skip the per-folder listing fetches.
+async function loadManifest() {
+  try {
+    const r = await fetch(encodeURI(`${MOTION_BASE}/manifest.json`));
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (e) { return null; }
+}
+
 // Auto-discover *.fbx in a motion folder by reading the server's directory
 // listing (the python http.server used by 起動.bat returns one). Returns null
 // if listing isn't available, so we fall back to the hard-coded `files` list.
@@ -157,13 +168,25 @@ async function preload() {
   if (!res.ok) throw new Error(`VRM fetch failed: ${res.status}`);
   vrmBuffer = await res.arrayBuffer();
 
-  // Refresh each pool's file list from the actual folder contents (drop a new
-  // .fbx into the folder and it shows up automatically). Falls back to the
-  // hard-coded list if the directory can't be listed.
-  await Promise.all(Object.values(MOTION_POOLS).map(async (def) => {
-    const found = await listFbxFiles(def.dir);
-    if (found) def.files = found;
-  }));
+  // Resolve each pool's file list. Priority:
+  //   1) manifest.json next to the motion folders — used in deployments
+  //      without directory listing (e.g. GitHub Pages) so we don't 404-spam.
+  //   2) directory listing — drop a file into the folder while running the
+  //      local python server and it shows up automatically.
+  //   3) the hard-coded list above.
+  const manifest = await loadManifest();
+  if (manifest) {
+    for (const [pool, files] of Object.entries(manifest)) {
+      if (MOTION_POOLS[pool] && Array.isArray(files) && files.length) {
+        MOTION_POOLS[pool].files = files;
+      }
+    }
+  } else {
+    await Promise.all(Object.values(MOTION_POOLS).map(async (def) => {
+      const found = await listFbxFiles(def.dir);
+      if (found) def.files = found;
+    }));
+  }
 
   progress.total = Object.values(MOTION_POOLS).reduce((s, d) => s + d.files.length, 0);
   const jobs = [];
