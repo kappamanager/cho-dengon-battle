@@ -125,7 +125,14 @@ function StickFigure({ color = '#ff4757', deep = '#c81d2c', anim = 'idle', size 
       const topReserve = host.closest('.game-main') ? baseH * 0.42 : 0;
       const hByHeight = Math.min(baseH * 0.85 * (size / 140), baseH - extra - sibH - topReserve);
 
-      const hh = Math.max(110, Math.round(Math.min(hByHeight, hByWidth)));
+      // Vmin-based cap so figures scale on the same axis as every other UI
+      // element (titles, buttons, chips, tags are all vmin-clamped). Without
+      // this, a wide-but-short window let the stage-relative figure outgrow
+      // its surrounding UI and overflow into the buttons.
+      const vminPx = Math.min(window.innerWidth || 1280, window.innerHeight || 720);
+      const hByVmin = vminPx * 0.32 * (size / 140);
+
+      const hh = Math.max(110, Math.round(Math.min(hByHeight, hByWidth, hByVmin)));
       const ww = Math.round(hh * AR);
       setDims((d) => (d.w === ww && d.h === hh ? d : { w: ww, h: hh }));
     };
