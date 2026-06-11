@@ -265,7 +265,6 @@ function ScreenNames({ count, names, onConfirm, onBack }) {
           disabled={!ready}
           onClick={() => onConfirm(vals.map((v) => v.trim()))}
         >決定 →</button>
-        {!ready && <div className="hint">全員の名前を入れると進めるよ</div>}
       </div>
     </div>
   );
