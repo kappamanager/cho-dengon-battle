@@ -1053,3 +1053,150 @@ input { font-family: inherit; }
   text-align: center;
   margin-top: 2px;
 }
+
+/* ===== TOP: problem download / upload bar ===== */
+.problem-bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.4vmin, 16px);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: clamp(6px, 1.2vmin, 12px);
+  position: relative;
+  z-index: 4;
+}
+.problem-status {
+  font-size: clamp(11px, 1.6vmin, 15px);
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: var(--paper);
+  border: 3px solid var(--shadow-ink);
+  border-radius: var(--radius-pill);
+  padding: clamp(3px, 0.6vmin, 6px) clamp(10px, 1.6vmin, 16px);
+}
+
+/* ===== Script picker (theme × level grid) ===== */
+.script-picker {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(6px, 1.4vmin, 14px);
+}
+.script-grid {
+  display: grid;
+  gap: clamp(5px, 0.9vmin, 10px);
+  align-items: stretch;
+}
+.sg-corner {
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Mochiy Pop One', sans-serif;
+  font-size: clamp(10px, 1.5vmin, 14px);
+  color: var(--ink-soft);
+  padding: 0 clamp(6px, 1vmin, 12px);
+}
+.sg-head {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--ink);
+  border: 3px solid var(--shadow-ink);
+  border-radius: clamp(8px, 1.4vmin, 14px);
+  padding: clamp(4px, 0.9vmin, 9px) clamp(6px, 1.2vmin, 14px);
+}
+.sg-head .sg-lv {
+  font-family: 'Mochiy Pop One', sans-serif;
+  font-size: clamp(12px, 1.9vmin, 18px);
+  color: var(--gold);
+}
+.sg-head .sg-stars { font-size: clamp(9px, 1.3vmin, 13px); color: var(--gold-deep); }
+.sg-theme {
+  display: flex; align-items: center; justify-content: flex-end;
+  font-family: 'Mochiy Pop One', sans-serif;
+  font-size: clamp(13px, 2vmin, 20px);
+  color: var(--ink);
+  padding-right: clamp(6px, 1.2vmin, 14px);
+  white-space: nowrap;
+}
+.sg-cell {
+  display: flex; align-items: center; justify-content: center;
+  min-width: clamp(56px, 8vmin, 96px);
+  min-height: clamp(44px, 6.5vmin, 74px);
+  font-family: 'Mochiy Pop One', sans-serif;
+  font-size: clamp(12px, 1.8vmin, 18px);
+  color: var(--ink);
+  background: var(--paper);
+  border: 3px solid var(--shadow-ink);
+  border-radius: clamp(8px, 1.4vmin, 16px);
+  box-shadow: 0 4px 0 var(--shadow-ink);
+  cursor: pointer;
+  transition: transform 100ms ease, box-shadow 100ms ease, background 120ms;
+}
+.sg-cell:hover:not(:disabled) {
+  transform: translateY(-3px);
+  background: #fff4cf;
+}
+.sg-cell.active {
+  background: linear-gradient(180deg, #ffe066, var(--gold));
+  transform: translateY(-3px) rotate(-2deg);
+  box-shadow: 0 8px 0 var(--shadow-ink);
+}
+.sg-cell:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: 0 4px 0 var(--shadow-ink);
+}
+
+/* ===== Script overlay (the script the reader reads aloud) ===== */
+.script-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 30, 43, 0.78);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 300;
+  padding: clamp(16px, 4vmin, 48px);
+}
+.script-card {
+  background: var(--paper);
+  border: 6px solid var(--shadow-ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  width: min(900px, 92vw);
+  max-height: 88vh;
+  padding: clamp(18px, 3vmin, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vmin, 24px);
+}
+.script-badge {
+  display: flex; align-items: center; gap: clamp(8px, 1.5vmin, 16px);
+  flex-wrap: wrap;
+}
+.script-badge .sb-theme {
+  font-family: 'Mochiy Pop One', sans-serif;
+  font-size: clamp(16px, 2.4vmin, 24px);
+  color: #fff;
+  background: var(--p2);
+  border: 3px solid var(--shadow-ink);
+  border-radius: var(--radius-pill);
+  padding: clamp(3px, 0.7vmin, 7px) clamp(12px, 1.8vmin, 20px);
+}
+.script-badge .sb-level {
+  font-family: 'Mochiy Pop One', sans-serif;
+  font-size: clamp(15px, 2.2vmin, 22px);
+  color: var(--ink);
+}
+.script-badge .sb-stars { color: var(--gold-deep); }
+.script-text {
+  flex: 1;
+  overflow-y: auto;
+  font-size: clamp(20px, 3.4vmin, 38px);
+  line-height: 1.7;
+  color: var(--ink);
+  font-weight: 700;
+  background: #fffdf6;
+  border: 4px dashed var(--gold-deep);
+  border-radius: var(--radius-sm);
+  padding: clamp(14px, 2.4vmin, 28px);
+}
+.script-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: clamp(10px, 2vmin, 20px);
+}

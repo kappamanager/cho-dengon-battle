@@ -104,9 +104,10 @@ window.ScreenLoading = ScreenLoading;
 /* ====================================================================
  * 画面1: TOP
  * ==================================================================== */
-function ScreenTop({ onStart }) {
+function ScreenTop({ onStart, onUpload, onDownload, problemStatus }) {
   // dancing demo players
   const demo = PLAYER_COLORS.slice(0, 4);
+  const fileRef = useR(null);
 
   // TOP BGM: play once (no loop). Browsers may block autoplay with sound,
   // so fall back to starting on the first user interaction.
@@ -151,10 +152,27 @@ function ScreenTop({ onStart }) {
         ))}
       </div>
 
-      <div className="col-center" style={{ paddingBottom: 24 }}>
+      <div className="col-center" style={{ paddingBottom: 12 }}>
         <button className="btn-pop huge gold top-cta" onClick={onStart}>
           ▶ 遊ぶ！
         </button>
+
+        <div className="problem-bar">
+          <button className="btn-pop ghost small" onClick={onDownload}>
+            ⬇ 問題フォーマット
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".xlsx,.xls"
+            style={{ display: 'none' }}
+            onChange={(e) => { const f = e.target.files[0]; if (f) onUpload(f); e.target.value = ''; }}
+          />
+          <button className="btn-pop ghost small" onClick={() => fileRef.current && fileRef.current.click()}>
+            ⬆ 問題をアップロード
+          </button>
+          <span className="problem-status">{problemStatus}</span>
+        </div>
       </div>
     </div>
   );
@@ -427,7 +445,10 @@ function ScreenGame({
   correctIds,
   scoringDelta,
   onPickReader,
-  onPickLevel,
+  problems,
+  themeIdx,
+  onPickCell,
+  onCancelCell,
   onToggleAnswer,
   onConfirmReader,
   onConfirmLevel,
@@ -437,16 +458,17 @@ function ScreenGame({
   const challenger = players[challengerIdx];
   const phaseLabels = {
     reader_select: 'フェーズ① 読み上げ人を選ぼう',
-    level_select:  'フェーズ② レベルを選ぼう',
+    level_select:  'フェーズ② 原稿を選ぼう',
     answer_select: 'フェーズ③ 正解者を選ぼう',
     scoring:       'フェーズ④ 採点中…',
   };
   const guideText = {
     reader_select: '読み上げ人を選んでください',
-    level_select:  'レベルを選んで伝言を開始してください',
+    level_select:  'テーマとレベルを選んで原稿を開いてください',
     answer_select: '正解者を選択してください',
     scoring:       '採点中…',
   };
+  const scriptOpen = phase === 'level_select' && themeIdx != null && level != null;
 
   // (scoring used to auto-advance after 2.4s, but players need time to read
   //  the breakdown — they now press a "次のラウンドへ" button explicitly.)
@@ -515,19 +537,38 @@ function ScreenGame({
             })}
           </div>
 
-          {/* Phase-specific panel */}
+          {/* Phase-specific panel: theme × level script picker */}
           {phase === 'level_select' && (
-            <div style={{ marginTop: 16 }}>
-              <div className="level-row">
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <button
-                    key={n}
-                    className={`level-chip ${level === n ? 'active' : ''}`}
-                    onClick={() => onPickLevel(n)}
-                  >
-                    <span>{n}</span>
-                    <span className="star">{'★'.repeat(n)}</span>
-                  </button>
+            <div className="script-picker">
+              <div
+                className="script-grid"
+                style={{ gridTemplateColumns: 'auto repeat(5, 1fr)' }}
+              >
+                <div className="sg-corner">テーマ＼レベル</div>
+                {[1, 2, 3, 4, 5].map((lv) => (
+                  <div key={lv} className="sg-head">
+                    <span className="sg-lv">レベル{lv}</span>
+                    <span className="sg-stars">{'★'.repeat(lv)}</span>
+                  </div>
+                ))}
+                {(problems || []).map((t, ti) => (
+                  <React.Fragment key={ti}>
+                    <div className="sg-theme">{t.theme}</div>
+                    {[1, 2, 3, 4, 5].map((lv) => {
+                      const has = (t.scripts[lv - 1] || '').trim().length > 0;
+                      const sel = themeIdx === ti && level === lv;
+                      return (
+                        <button
+                          key={lv}
+                          className={`sg-cell ${sel ? 'active' : ''}`}
+                          disabled={!has}
+                          onClick={() => onPickCell(ti, lv)}
+                        >
+                          {has ? '原稿' : '—'}
+                        </button>
+                      );
+                    })}
+                  </React.Fragment>
                 ))}
               </div>
             </div>
@@ -567,14 +608,7 @@ function ScreenGame({
               className="btn-pop gold"
               disabled={!readerId}
               onClick={onConfirmReader}
-            >レベル選択へ →</button>
-          )}
-          {phase === 'level_select' && (
-            <button
-              className="btn-pop gold"
-              disabled={!level}
-              onClick={onConfirmLevel}
-            >採点へ →</button>
+            >原稿選択へ →</button>
           )}
           {phase === 'answer_select' && (
             <button
@@ -590,6 +624,23 @@ function ScreenGame({
           )}
         </div>
       </div>
+
+      {/* Script overlay — the reader reads this aloud, then proceeds to scoring */}
+      {scriptOpen && (
+        <div className="script-overlay">
+          <div className="script-card">
+            <div className="script-badge">
+              <span className="sb-theme">{problems[themeIdx].theme}</span>
+              <span className="sb-level">レベル {level} <span className="sb-stars">{'★'.repeat(level)}</span></span>
+            </div>
+            <div className="script-text">{problems[themeIdx].scripts[level - 1]}</div>
+            <div className="script-actions">
+              <button className="btn-pop ghost" onClick={onCancelCell}>← 選び直す</button>
+              <button className="btn-pop gold" onClick={onConfirmLevel}>採点へ →</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

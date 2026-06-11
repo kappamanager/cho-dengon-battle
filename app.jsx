@@ -18,10 +18,31 @@ function App() {
   const [phase, setPhase] = useSt('reader_select'); // reader_select | level_select | answer_select | scoring
   const [readerId, setReaderId] = useSt(null);
   const [level, setLevel] = useSt(null);
+  const [themeIdx, setThemeIdx] = useSt(null); // selected theme row in the script panel
   const [correctIds, setCorrectIds] = useSt([]);
   const [scoringDelta, setScoringDelta] = useSt({});
   const [roundHistory, setRoundHistory] = useSt([]); // for back/undo
   const [showFinishConfirm, setFinishConfirm] = useSt(false);
+
+  // Problem set (standard, or overwritten by an uploaded Excel — session only)
+  const [problems, setProblems] = useSt(() => window.STANDARD_PROBLEMS);
+  const [customLoaded, setCustomLoaded] = useSt(false);
+  const problemStatus = customLoaded
+    ? `アップロード済み（${problems.length}テーマ）`
+    : '標準問題を使用中';
+
+  const handleDownloadFormat = () => { try { window.downloadProblemFormat(); } catch (e) { alert('ダウンロードに失敗しました'); } };
+  const handleUpload = async (file) => {
+    try {
+      const parsed = await window.parseProblemFile(file);
+      if (!parsed.length) { alert('問題が読み込めませんでした。フォーマット（1行目=見出し、2行目以降=テーマ）をご確認ください。'); return; }
+      setProblems(parsed);
+      setCustomLoaded(true);
+      alert(`問題を読み込みました：${parsed.length}テーマ × 最大5レベル`);
+    } catch (e) {
+      alert('アップロードエラー：' + (e && e.message ? e.message : e));
+    }
+  };
 
   // Timer tick
   useEf(() => {
@@ -59,6 +80,7 @@ function App() {
     setPhase('reader_select');
     setReaderId(null);
     setLevel(null);
+    setThemeIdx(null);
     setCorrectIds([]);
     setRoundHistory([]);
     setStep('game');
@@ -67,7 +89,8 @@ function App() {
   /* ---------- game phase actions ---------- */
   const pickReader = (id) => setReaderId(id);
   const confirmReader = () => setPhase('level_select');
-  const pickLevel = (n) => setLevel(n);
+  const pickCell = (ti, lv) => { setThemeIdx(ti); setLevel(lv); }; // theme + level from panel
+  const cancelCell = () => { setThemeIdx(null); setLevel(null); }; // back to the grid
   const confirmLevel = () => { setPhase('answer_select'); setCorrectIds([]); };
   const toggleAnswer = (id) => {
     setCorrectIds((cur) => cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id]);
@@ -93,7 +116,7 @@ function App() {
 
     // push history for undo (after scoring frame committed)
     setRoundHistory((h) => [...h, {
-      turnIdx, readerId, level: lvl, correctIds: [...correctIds], delta,
+      turnIdx, readerId, level: lvl, themeIdx, correctIds: [...correctIds], delta,
     }]);
   };
   const afterScoring = () => {
@@ -101,6 +124,7 @@ function App() {
     setTurnIdx((i) => (i + 1) % players.length);
     setReaderId(null);
     setLevel(null);
+    setThemeIdx(null);
     setCorrectIds([]);
     setScoringDelta({});
     setPhase('reader_select');
@@ -113,7 +137,7 @@ function App() {
   );
   const handleBack = () => {
     if (step !== 'game') return;
-    if (phase === 'level_select') { setPhase('reader_select'); return; }
+    if (phase === 'level_select') { setThemeIdx(null); setLevel(null); setPhase('reader_select'); return; }
     if (phase === 'answer_select') { setPhase('level_select'); return; }
     if (phase === 'scoring') {
       // revert last applied delta and re-enter answer_select
@@ -142,6 +166,7 @@ function App() {
       setTurnIdx(last.turnIdx);
       setReaderId(last.readerId);
       setLevel(last.level);
+      setThemeIdx(last.themeIdx ?? null);
       setCorrectIds(last.correctIds);
       setScoringDelta({});
       setPhase('answer_select');
@@ -155,8 +180,9 @@ function App() {
   const restart = () => {
     setStep('top');
     setPlayers([]); setScores({}); setRoundHistory([]);
-    setReaderId(null); setLevel(null); setCorrectIds([]); setScoringDelta({});
+    setReaderId(null); setLevel(null); setThemeIdx(null); setCorrectIds([]); setScoringDelta({});
     setTurnIdx(0); setRemaining(null);
+    // keep uploaded problems for the session (do not reset `problems`)
   };
 
   /* ---------- back transitions (pre-game) ---------- */
@@ -175,7 +201,7 @@ function App() {
       <SceneBackground confetti={false} />
       <div className="app-shell">
         {step === 'loading' && <ScreenLoading onDone={() => setStep('top')} />}
-        {step === 'top'    && <ScreenTop onStart={goCount} />}
+        {step === 'top'    && <ScreenTop onStart={goCount} onUpload={handleUpload} onDownload={handleDownloadFormat} problemStatus={problemStatus} />}
         {step === 'count'  && <ScreenCount initial={count} onConfirm={handleCount} onBack={backPreGame} />}
         {step === 'names'  && <ScreenNames count={count} names={players.map(p => p.name)} onConfirm={handleNames} onBack={backPreGame} />}
         {step === 'order'  && <ScreenOrder players={players} onConfirm={handleOrder} onBack={backPreGame} />}
@@ -202,7 +228,10 @@ function App() {
                 correctIds={correctIds}
                 scoringDelta={scoringDelta}
                 onPickReader={pickReader}
-                onPickLevel={pickLevel}
+                problems={problems}
+                themeIdx={themeIdx}
+                onPickCell={pickCell}
+                onCancelCell={cancelCell}
                 onToggleAnswer={toggleAnswer}
                 onConfirmReader={confirmReader}
                 onConfirmLevel={confirmLevel}
