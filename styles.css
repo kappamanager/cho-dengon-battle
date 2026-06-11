@@ -1142,6 +1142,17 @@ input { font-family: inherit; }
   cursor: not-allowed;
   box-shadow: 0 4px 0 var(--shadow-ink);
 }
+.sg-cell.used {
+  opacity: 1; /* keep readable but clearly "done" */
+  color: var(--ink-soft);
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(43, 30, 43, 0.08) 0 6px,
+    rgba(43, 30, 43, 0.03) 6px 12px
+  );
+  box-shadow: 0 4px 0 var(--shadow-ink);
+}
+.sg-cell.used:disabled { opacity: 1; }
 
 /* ===== Script overlay (the script the reader reads aloud) ===== */
 .script-overlay {

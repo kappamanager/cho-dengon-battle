@@ -447,6 +447,7 @@ function ScreenGame({
   onPickReader,
   problems,
   themeIdx,
+  usedCells,
   onPickCell,
   onCancelCell,
   onToggleAnswer,
@@ -456,6 +457,10 @@ function ScreenGame({
   onAfterScoring,
 }) {
   const challenger = players[challengerIdx];
+  const usedSet = new Set(usedCells || []);
+  // a cell tapped in the grid waits here for a YES/NO confirm (anti-peek guard)
+  const [pending, setPending] = useS(null);
+  useE(() => { if (phase !== 'level_select') setPending(null); }, [phase]);
   const phaseLabels = {
     reader_select: 'フェーズ① 読み上げ人を選ぼう',
     level_select:  'フェーズ② 原稿を選ぼう',
@@ -556,15 +561,16 @@ function ScreenGame({
                     <div className="sg-theme">{t.theme}</div>
                     {[1, 2, 3, 4, 5].map((lv) => {
                       const has = (t.scripts[lv - 1] || '').trim().length > 0;
+                      const used = usedSet.has(ti + '-' + lv);
                       const sel = themeIdx === ti && level === lv;
                       return (
                         <button
                           key={lv}
-                          className={`sg-cell ${sel ? 'active' : ''}`}
-                          disabled={!has}
-                          onClick={() => onPickCell(ti, lv)}
+                          className={`sg-cell ${sel ? 'active' : ''} ${used ? 'used' : ''}`}
+                          disabled={!has || used}
+                          onClick={() => setPending({ ti, lv })}
                         >
-                          {has ? '原稿' : '—'}
+                          {!has ? '—' : used ? '済' : '原稿'}
                         </button>
                       );
                     })}
@@ -624,6 +630,18 @@ function ScreenGame({
           )}
         </div>
       </div>
+
+      {/* Anti-peek confirm: don't reveal the script until everyone's ready */}
+      {phase === 'level_select' && pending && !scriptOpen && (
+        <ConfirmDialog
+          title="原稿を表示しますか？"
+          message={`「${problems[pending.ti].theme} ／ レベル${pending.lv}」の原稿を画面に大きく表示します。挑戦者は画面を見ないようにしてください。`}
+          confirmLabel="表示する"
+          cancelLabel="やめる"
+          onConfirm={() => { onPickCell(pending.ti, pending.lv); setPending(null); }}
+          onCancel={() => setPending(null)}
+        />
+      )}
 
       {/* Script overlay — the reader reads this aloud, then proceeds to scoring */}
       {scriptOpen && (

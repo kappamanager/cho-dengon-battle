@@ -194,6 +194,12 @@ function App() {
   };
 
   /* ---------- render ---------- */
+  // Cells already used in committed rounds this game → greyed out in the panel.
+  // Derived from roundHistory so undo (which pops history) re-enables them.
+  const usedCells = useMm(
+    () => roundHistory.filter((r) => r.themeIdx != null).map((r) => `${r.themeIdx}-${r.level}`),
+    [roundHistory]
+  );
   const showConfettiBg = step === 'top' || step === 'result';
 
   return (
@@ -230,6 +236,7 @@ function App() {
                 onPickReader={pickReader}
                 problems={problems}
                 themeIdx={themeIdx}
+                usedCells={usedCells}
                 onPickCell={pickCell}
                 onCancelCell={cancelCell}
                 onToggleAnswer={toggleAnswer}
